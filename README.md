@@ -1,7 +1,3 @@
-Of course! This is an excellent project. We will build a complete Next.js (App Router) application that integrates with the DocuSign eSign REST API from scratch. We'll handle user authentication, database storage for envelopes, and Hungarian localization.
-
-Here is a comprehensive, step-by-step plan and the code to build it.
-
 ### **Project Goal**
 
 To create a secure, multi-user web application where authenticated users can create, send, track, and manage DocuSign envelopes. The application will be fully localized in Hungarian (HU).

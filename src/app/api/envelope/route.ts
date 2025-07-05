@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server'
 
 export const POST = async (req: Request) => {
   const formData = await req.formData()
-  const sender_name_field = formData.get('sender_name_field') as string
   const signerName = formData.get('signerName') as string
   const signerEmail = formData.get('signerEmail') as string
+  const content = formData.get('content') as string
 
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('access_token')?.value
 
-  const baseUrl = process.env.DOCUSIGN_BASE_URL
+  const baseUrl = process.env.DOCUSIGN_REST_API_BASE_URL
   const accountId = process.env.DOCUSIGN_ACCOUNT_ID
   const templateId = process.env.DOCUSIGN_TEMPLATE_ID
 
@@ -27,12 +27,12 @@ export const POST = async (req: Request) => {
           roleName: 'signer',
           name: signerName,
           email: signerEmail,
-          clientUserId: '1234',
+          clientUserId: 'signer-1',
           tabs: {
             textTabs: [
               {
-                tabLabel: 'sender_name_field',
-                value: sender_name_field,
+                tabLabel: 'sender_field_content',
+                value: content,
               },
             ],
           },
@@ -45,8 +45,10 @@ export const POST = async (req: Request) => {
   const envelopeData = await envelopeRes.json()
 
   if (!envelopeRes.ok) {
-    return NextResponse.json({ error: 'Envelope hiba', detail: envelopeData }, { status: 500 })
+    return NextResponse.json({ error: 'Envelope error', detail: envelopeData }, { status: 500 })
   }
+
+  console.log(envelopeData)
 
   const envelopeId = envelopeData.envelopeId
 
@@ -64,7 +66,7 @@ export const POST = async (req: Request) => {
         email: signerEmail,
         userName: signerName,
         recipientId: '1',
-        clientUserId: '1234',
+        clientUserId: 'signer-1',
       }),
     },
   )
@@ -72,7 +74,7 @@ export const POST = async (req: Request) => {
   const viewData = await recipientViewRes.json()
 
   if (!recipientViewRes.ok) {
-    return NextResponse.json({ error: 'View URL hiba', detail: viewData }, { status: 500 })
+    return NextResponse.json({ error: 'View URL error', detail: viewData }, { status: 500 })
   }
 
   return NextResponse.json({ url: viewData.url })

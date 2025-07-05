@@ -3,14 +3,10 @@ import Link from 'next/link'
 
 import { useSession } from '@/hooks/useSession'
 
-import { cn } from '@/lib/utils'
-
-import { UserMenu } from '@/layout/user-menu'
-
-import { buttonVariants } from '@/components/ui/button'
+import { AuthButtons } from './auth-buttons'
 
 export const Header = () => {
-  const { user } = useSession()
+  const { user, isPending } = useSession()
 
   return (
     <header className="bg-background/30 sticky top-0 left-0 z-50 border-b backdrop-blur-sm">
@@ -31,13 +27,8 @@ export const Header = () => {
           >
             How it Works
           </Link>
-          {!user?.sub && (
-            <Link href="/api/oauth/login" className={cn(buttonVariants({ variant: 'outline' }))}>
-              Sign In
-            </Link>
-          )}
 
-          {user?.sub && <UserMenu />}
+          <AuthButtons user={user} isPending={isPending} />
         </nav>
       </div>
     </header>

@@ -1,7 +1,5 @@
 import { Shield, CheckCircle } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
-
 export default function Hero() {
   return (
     <section className="py-20">
@@ -19,15 +17,7 @@ export default function Hero() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Button size="lg">Get Started Free</Button>
-              <Button size="lg" variant="outline">
-                Watch Demo
-              </Button>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="flex items-center space-x-6 pt-8">
+            <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <Shield className="text-primary h-5 w-5" />
                 <span className="text-foreground text-sm">Bank-level Security</span>
@@ -38,7 +28,6 @@ export default function Hero() {
               </div>
             </div>
           </div>
-          {/* Contract Form is not part of Hero, so not included here */}
         </div>
       </div>
     </section>

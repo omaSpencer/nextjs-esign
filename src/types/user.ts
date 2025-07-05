@@ -12,3 +12,10 @@ export interface User {
     base_uri: string
   }[]
 }
+
+export interface EnvelopeStatus {
+  envelopeId: string
+  status: string
+  statusDateTime: string
+  emailSubject: string
+}

@@ -1,9 +1,9 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { DocuSignService } from '@/lib/docusign-config'
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
-    const searchParams = request.nextUrl.searchParams
+    const searchParams = new URLSearchParams(request.url)
     const status = searchParams.get('status') || undefined
     const count = searchParams.get('count')
       ? Number.parseInt(searchParams.get('count')!)
@@ -11,7 +11,14 @@ export async function GET(request: NextRequest) {
     const fromDate = searchParams.get('fromDate') || undefined
 
     const docusignService = new DocuSignService()
-    const initialized = await docusignService.initialize()
+    const initialized = await docusignService.createEnvelope({
+      emailSubject: 'Test',
+      documents: [],
+      recipients: {
+        signers: [],
+      },
+      status: 'sent',
+    })
 
     if (!initialized) {
       return NextResponse.json({ error: 'Failed to initialize DocuSign service' }, { status: 500 })

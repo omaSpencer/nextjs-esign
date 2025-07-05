@@ -1,10 +1,10 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { DocuSignClient } from '@/lib/docusign-client'
 
-export async function GET(request: NextRequest, { params }: { params: { envelopeId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ envelopeId: string }> }) {
   try {
     const docusignClient = new DocuSignClient()
-    const envelope = await docusignClient.getEnvelopeStatus(params.envelopeId)
+    const envelope = await docusignClient.getEnvelopeStatus((await params).envelopeId)
 
     if (!envelope) {
       return NextResponse.json({ error: 'Envelope not found' }, { status: 404 })

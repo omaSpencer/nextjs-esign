@@ -9,12 +9,14 @@ const fontSans = Inter({
 
 const fontMono = Fira_Mono({
   variable: '--font-mono',
+  subsets: ['latin'],
   weight: ['400', '500', '700'],
 })
 
 const fontSerif = Merriweather({
   variable: '--font-serif',
   weight: ['400', '700'],
+  subsets: ['latin'],
 })
 
 export const metadata: Metadata = {

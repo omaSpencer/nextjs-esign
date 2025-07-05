@@ -1,6 +1,8 @@
 'use client'
 
 import { Send } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,8 +17,31 @@ import {
 } from '@/components/ui/select'
 
 export default function ContractForm() {
+  const router = useRouter()
+
+  const { mutate: createEnvelope } = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const res = await fetch('/api/envelope', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to create envelope')
+      }
+
+      return res.json()
+    },
+    onSuccess: (data: { url: string }) => {
+      router.push(`/envelope?url=${data.url}`)
+    },
+    onError: (error) => {
+      console.error(error)
+    },
+  })
+
   async function handleSubmit(formData: FormData) {
-    console.log(formData)
+    createEnvelope(formData)
   }
 
   return (

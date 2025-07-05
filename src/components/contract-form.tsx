@@ -1,14 +1,20 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { Loader2, Send, CheckCircle } from "lucide-react"
-import { sendContractAction } from "@/app/actions"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Card, CardContent } from '@/components/ui/card'
+import { Loader2, Send, CheckCircle } from 'lucide-react'
+import { sendContractAction } from '@/app/actions'
 
 export function ContractForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,11 +33,11 @@ export function ContractForm() {
           setIsSuccess(false)
         }, 3000)
       } else {
-        alert(result.error || "Failed to send contract")
+        alert(result.error || 'Failed to send contract')
       }
     } catch (error) {
       console.error(error)
-      alert("An error occurred while sending the contract")
+      alert('An error occurred while sending the contract')
     } finally {
       setIsSubmitting(false)
     }
@@ -41,8 +47,10 @@ export function ContractForm() {
     return (
       <Card>
         <CardContent className="p-6 text-center">
-          <CheckCircle className="h-12 w-12 text-primary mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-foreground mb-2">Contract Sent Successfully!</h3>
+          <CheckCircle className="text-primary mx-auto mb-4 h-12 w-12" />
+          <h3 className="text-foreground mb-2 text-lg font-semibold">
+            Contract Sent Successfully!
+          </h3>
           <p className="text-primary">
             The contract has been sent via DocuSign. The signer will receive an email shortly.
           </p>
@@ -56,7 +64,13 @@ export function ContractForm() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="signerName">Signer Name *</Label>
-          <Input id="signerName" name="signerName" placeholder="John Doe" required disabled={isSubmitting} />
+          <Input
+            id="signerName"
+            name="signerName"
+            placeholder="John Doe"
+            required
+            disabled={isSubmitting}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="signerEmail">Signer Email *</Label>
@@ -100,7 +114,12 @@ export function ContractForm() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="contractValue">Contract Value</Label>
-          <Input id="contractValue" name="contractValue" placeholder="$5,000" disabled={isSubmitting} />
+          <Input
+            id="contractValue"
+            name="contractValue"
+            placeholder="$5,000"
+            disabled={isSubmitting}
+          />
         </div>
       </div>
 
@@ -140,9 +159,9 @@ export function ContractForm() {
         )}
       </Button>
 
-      <p className="text-xs text-muted-foreground text-center">
-        By clicking &quot;Send for Signature&quot;, you agree to our Terms of Service and Privacy Policy. The contract will be
-        sent via DocuSign for secure digital signature.
+      <p className="text-muted-foreground text-center text-xs">
+        By clicking &quot;Send for Signature&quot;, you agree to our Terms of Service and Privacy
+        Policy. The contract will be sent via DocuSign for secure digital signature.
       </p>
     </form>
   )

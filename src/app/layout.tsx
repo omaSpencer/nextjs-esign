@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Fira_Mono, Inter, Merriweather } from 'next/font/google'
 import './globals.css'
+import Provider from './provider'
 
 const fontSans = Inter({
   variable: '--font-sans',
@@ -34,7 +35,7 @@ export default function RootLayout({
       <body
         className={`${fontMono.variable} ${fontSans.variable} ${fontSerif.variable} antialiased`}
       >
-        {children}
+        <Provider>{children}</Provider>
       </body>
     </html>
   )

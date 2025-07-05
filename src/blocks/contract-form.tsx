@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { Send } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,51 +13,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Card, CardContent } from '@/components/ui/card'
-import { Loader2, Send, CheckCircle } from 'lucide-react'
-import { sendContractAction } from '@/app/actions'
 
-export function ContractForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-
+export default function ContractForm() {
   async function handleSubmit(formData: FormData) {
-    setIsSubmitting(true)
-
-    try {
-      const result = await sendContractAction(formData)
-
-      if (result.success) {
-        setIsSuccess(true)
-        // Reset form after 3 seconds
-        setTimeout(() => {
-          setIsSuccess(false)
-        }, 3000)
-      } else {
-        alert(result.error || 'Failed to send contract')
-      }
-    } catch (error) {
-      console.error(error)
-      alert('An error occurred while sending the contract')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  if (isSuccess) {
-    return (
-      <Card>
-        <CardContent className="p-6 text-center">
-          <CheckCircle className="text-primary mx-auto mb-4 h-12 w-12" />
-          <h3 className="text-foreground mb-2 text-lg font-semibold">
-            Contract Sent Successfully!
-          </h3>
-          <p className="text-primary">
-            The contract has been sent via DocuSign. The signer will receive an email shortly.
-          </p>
-        </CardContent>
-      </Card>
-    )
+    console.log(formData)
   }
 
   return (
@@ -64,13 +24,7 @@ export function ContractForm() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="signerName">Signer Name *</Label>
-          <Input
-            id="signerName"
-            name="signerName"
-            placeholder="John Doe"
-            required
-            disabled={isSubmitting}
-          />
+          <Input id="signerName" name="signerName" placeholder="John Doe" required />
         </div>
         <div className="space-y-2">
           <Label htmlFor="signerEmail">Signer Email *</Label>
@@ -80,7 +34,6 @@ export function ContractForm() {
             type="email"
             placeholder="john@example.com"
             required
-            disabled={isSubmitting}
           />
         </div>
       </div>
@@ -92,14 +45,13 @@ export function ContractForm() {
           name="contractTitle"
           placeholder="Service Agreement - Web Development"
           required
-          disabled={isSubmitting}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="contractType">Contract Type</Label>
-          <Select name="contractType" disabled={isSubmitting}>
+          <Select name="contractType">
             <SelectTrigger className="w-full max-w-full">
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
@@ -114,12 +66,7 @@ export function ContractForm() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="contractValue">Contract Value</Label>
-          <Input
-            id="contractValue"
-            name="contractValue"
-            placeholder="$5,000"
-            disabled={isSubmitting}
-          />
+          <Input id="contractValue" name="contractValue" placeholder="$5,000" />
         </div>
       </div>
 
@@ -130,33 +77,23 @@ export function ContractForm() {
           name="description"
           placeholder="Brief description of the contract terms and deliverables..."
           rows={4}
-          disabled={isSubmitting}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="startDate">Start Date</Label>
-          <Input id="startDate" name="startDate" type="date" disabled={isSubmitting} />
+          <Input id="startDate" name="startDate" type="date" />
         </div>
         <div className="space-y-2">
           <Label htmlFor="endDate">End Date</Label>
-          <Input id="endDate" name="endDate" type="date" disabled={isSubmitting} />
+          <Input id="endDate" name="endDate" type="date" />
         </div>
       </div>
 
-      <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Sending Contract...
-          </>
-        ) : (
-          <>
-            <Send className="mr-2 h-4 w-4" />
-            Send for Signature
-          </>
-        )}
+      <Button type="submit" className="w-full" size="lg">
+        <Send className="mr-2 h-4 w-4" />
+        Send for Signature
       </Button>
 
       <p className="text-muted-foreground text-center text-xs">

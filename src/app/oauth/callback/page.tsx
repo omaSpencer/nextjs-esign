@@ -3,10 +3,13 @@
 import { useEffect } from 'react'
 import { notFound, useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loader2Icon } from 'lucide-react'
 
 import { storeTokens } from '@/app/actions'
 
 import { sessionQueryKey } from '@/hooks/useSession'
+
+import { DefaultLayout } from '@/layout/default'
 
 export default function CallbackPage() {
   const searchParams = useSearchParams()
@@ -41,5 +44,11 @@ export default function CallbackPage() {
     }
   }, [code, isPending, isSuccess, mutate])
 
-  return <div>CallbackPage</div>
+  return (
+    <DefaultLayout>
+      <div className="flex h-screen flex-col items-center justify-center">
+        <Loader2Icon className="h-10 w-10 animate-spin" />
+      </div>
+    </DefaultLayout>
+  )
 }

@@ -2,26 +2,30 @@
 
 import { FileText, LogOut, User } from 'lucide-react'
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 
 const userMenu = [
-  
   {
     label: 'Profile',
     href: '/profile',
-    icon: User
+    icon: User,
   },
   {
     label: 'Contracts',
     href: '/contracts',
-    icon: FileText
+    icon: FileText,
   },
   {
     label: 'Sign Out',
     href: '/api/oauth/logout',
-    icon: LogOut
-  }
+    icon: LogOut,
+  },
 ]
 
 export const UserMenu = () => {

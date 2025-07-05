@@ -1,10 +1,10 @@
+import type { User } from '@/types/user'
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-
-import type { User } from '@/types/user'
 
 export default function UserInfoForm({
   sub,
@@ -15,10 +15,38 @@ export default function UserInfoForm({
   created,
   accounts,
 }: User) {
+  const basicFields = [
+    {
+      id: 'email',
+      label: 'Email Address',
+      value: email,
+    },
+    {
+      id: 'name',
+      label: 'Name',
+      value: name,
+    },
+    {
+      id: 'given_name',
+      label: 'First Name',
+      value: given_name,
+    },
+    {
+      id: 'family_name',
+      label: 'Last Name',
+      value: family_name,
+    },
+    {
+      id: 'sub',
+      label: 'User ID',
+      value: sub,
+    },
+  ]
+
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
+    <div className="mx-auto max-w-4xl space-y-6 p-6 lg:pb-10 xl:pb-16">
       <Card className="border-muted">
-        <CardHeader className="bg-secondary/50">
+        <CardHeader>
           <CardTitle className="text-primary text-2xl">User Profile</CardTitle>
           <CardDescription className="text-muted-foreground">
             Read-only user information and account details
@@ -26,61 +54,20 @@ export default function UserInfoForm({
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="sub" className="text-foreground font-medium">
-                User ID
-              </Label>
-              <Input id="sub" value={sub} disabled className="bg-muted text-muted-foreground" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground font-medium">
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                disabled
-                className="bg-muted text-muted-foreground"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-foreground font-medium">
-                Full Name
-              </Label>
-              <Input
-                id="name"
-                value={name}
-                disabled
-                className="bg-secondary text-secondary-foreground"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="given_name" className="text-foreground font-medium">
-                First Name
-              </Label>
-              <Input
-                id="given_name"
-                value={given_name}
-                disabled
-                className="bg-secondary text-secondary-foreground"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="family_name" className="text-foreground font-medium">
-                Last Name
-              </Label>
-              <Input
-                id="family_name"
-                value={family_name}
-                disabled
-                className="bg-secondary text-secondary-foreground"
-              />
-            </div>
+            {basicFields.map(({ id, label, value }) => (
+              <div key={id} className="space-y-2">
+                <Label htmlFor="email" className="text-foreground font-medium">
+                  {label}
+                </Label>
+                <Input
+                  id={id}
+                  value={value}
+                  disabled
+                  readOnly
+                  className="bg-muted text-muted-foreground"
+                />
+              </div>
+            ))}
 
             <div className="space-y-2">
               <Label htmlFor="created" className="text-foreground font-medium">
@@ -96,6 +83,7 @@ export default function UserInfoForm({
                   minute: '2-digit',
                 })}
                 disabled
+                readOnly
                 className="bg-muted text-muted-foreground"
               />
             </div>

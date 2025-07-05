@@ -14,7 +14,7 @@ export const DefaultLayout = ({
   className?: string
 }>) => {
   return (
-    <main className={cn(className)}>
+    <main className={cn('relative', className)}>
       <Header />
       {children}
       <Footer />

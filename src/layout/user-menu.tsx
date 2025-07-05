@@ -1,6 +1,7 @@
 'use client'
 
 import { FileText, LogOut, User } from 'lucide-react'
+import Link from 'next/link'
 
 import {
   DropdownMenu,
@@ -32,15 +33,17 @@ export const UserMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" size="icon" className="rounded-full">
           <User className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {userMenu.map((item) => (
           <DropdownMenuItem key={item.label}>
-            <item.icon className="mr-2 h-4 w-4" />
-            {item.label}
+            <Link href={item.href} className="flex items-center">
+              <item.icon className="mr-2 h-4 w-4" />
+              {item.label}
+            </Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -2,10 +2,7 @@
 
 import { CheckCircle } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { buttonVariants } from '@/components/ui/button'
 
 export default function AfterSigningContent() {
   return (
@@ -24,10 +21,6 @@ export default function AfterSigningContent() {
             Thank you for signing the document. The contract has been completed and all parties will
             receive a copy.
           </p>
-
-          <a href={process.env.NEXT_PUBLIC_APP_URL} className={cn(buttonVariants({ size: 'lg' }))}>
-            Create New Contract
-          </a>
         </CardContent>
       </Card>
     </div>

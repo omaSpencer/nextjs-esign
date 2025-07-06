@@ -1,7 +1,6 @@
 'use client'
 
 import { CheckCircle } from 'lucide-react'
-import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 
@@ -26,9 +25,9 @@ export default function AfterSigningContent() {
             receive a copy.
           </p>
 
-          <Link href="/" className={cn(buttonVariants({ size: 'lg' }))}>
+          <a href={process.env.NEXT_PUBLIC_APP_URL} className={cn(buttonVariants({ size: 'lg' }))}>
             Create New Contract
-          </Link>
+          </a>
         </CardContent>
       </Card>
     </div>

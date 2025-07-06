@@ -23,6 +23,7 @@ export const lucia = new Lucia(adapter, {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       lastLogin: user.lastLogin,
+      role: user.role,
     } satisfies UserAttributes
   },
 })

@@ -4,13 +4,15 @@ import { Loader2, Send } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 
+import { useSession } from '@/hooks/useSession'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 
 export default function ContractForm() {
   const router = useRouter()
+  const { user } = useSession()
 
   const { mutate: createEnvelope, isPending } = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -34,7 +36,7 @@ export default function ContractForm() {
   })
 
   async function handleSubmit(formData: FormData) {
-    if (!formData.get('signerName') || !formData.get('signerEmail') || !formData.get('content')) {
+    if (!formData.get('signerName') || !formData.get('signerEmail')) {
       return
     }
 
@@ -54,8 +56,9 @@ export default function ContractForm() {
             disabled={isPending}
           />
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="signerEmail">Signer Email *</Label>
+          <Label htmlFor="signerEmail">Email *</Label>
           <Input
             id="signerEmail"
             name="signerEmail"
@@ -67,21 +70,7 @@ export default function ContractForm() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="content">Contract Content</Label>
-        <Textarea
-          id="content"
-          name="content"
-          placeholder="Brief content of the contract terms and deliverables..."
-          rows={4}
-          required
-          maxLength={255}
-          minLength={32}
-          disabled={isPending}
-        />
-      </div>
-
-      <Button type="submit" className="w-full" size="lg" disabled={isPending}>
+      <Button type="submit" className="w-full" size="lg" disabled={isPending || !user?.sub}>
         {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (

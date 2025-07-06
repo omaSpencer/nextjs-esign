@@ -5,7 +5,6 @@ export const POST = async (req: Request) => {
   const formData = await req.formData()
   const signerName = formData.get('signerName') as string
   const signerEmail = formData.get('signerEmail') as string
-  const content = formData.get('content') as string
 
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('access_token')?.value
@@ -39,8 +38,6 @@ export const POST = async (req: Request) => {
   if (!envelopeRes.ok) {
     return NextResponse.json({ error: 'Envelope error', detail: envelopeData }, { status: 500 })
   }
-
-  console.log(envelopeData)
 
   const envelopeId = envelopeData.envelopeId
 

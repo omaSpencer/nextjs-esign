@@ -1,14 +1,16 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-export const GET = async () => {
+export const GET = async (request: Request) => {
+  const { searchParams } = new URL(request.url)
+  const recipientId = searchParams.get('recipientId')
+
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('access_token')?.value
 
   const baseUrl = process.env.DOCUSIGN_REST_API_BASE_URL
   const accountId = process.env.DOCUSIGN_ACCOUNT_ID
   const templateId = process.env.DOCUSIGN_TEMPLATE_ID
-  const recipientId = '22834622'
 
   try {
     const res = await fetch(

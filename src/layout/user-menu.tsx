@@ -3,6 +3,8 @@
 import { FileText, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 
+import { signOut } from '@/app/actions'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +26,7 @@ const userMenu = [
   },
   {
     label: 'Sign Out',
-    href: '/api/oauth/logout',
+    onClick: signOut,
     icon: LogOut,
   },
 ]
@@ -40,10 +42,17 @@ export const UserMenu = () => {
       <DropdownMenuContent>
         {userMenu.map((item) => (
           <DropdownMenuItem key={item.label}>
-            <Link href={item.href} className="flex items-center">
-              <item.icon className="mr-2 h-4 w-4" />
-              {item.label}
-            </Link>
+            {item.href ? (
+              <Link href={item.href} className="flex items-center">
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.label}
+              </Link>
+            ) : (
+              <Button variant="ghost" onClick={item.onClick}>
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.label}
+              </Button>
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -2,6 +2,7 @@ import { pgTable, pgEnum, text, timestamp, index } from 'drizzle-orm/pg-core'
 import { z } from 'zod'
 
 export const userStatus = pgEnum('user_status', ['active', 'inactive', 'banned'])
+export const userRole = pgEnum('user_role', ['admin', 'user'])
 
 export const users = pgTable(
   'users',
@@ -10,6 +11,7 @@ export const users = pgTable(
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
     status: userStatus('status').default('active').notNull(),
+    role: userRole('role').default('user').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at')
       .$onUpdate(() => new Date())

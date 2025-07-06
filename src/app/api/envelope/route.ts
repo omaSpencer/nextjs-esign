@@ -28,14 +28,6 @@ export const POST = async (req: Request) => {
           name: signerName,
           email: signerEmail,
           clientUserId: 'signer-1',
-          tabs: {
-            textTabs: [
-              {
-                tabLabel: 'sender_field_content',
-                value: content,
-              },
-            ],
-          },
         },
       ],
       status: 'sent',

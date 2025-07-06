@@ -50,7 +50,7 @@ export const POST = async (req: Request) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        returnUrl: 'http://localhost:3000/after-signing',
+        returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/after-signing`,
         authenticationMethod: 'none',
         email: signerEmail,
         userName: signerName,

@@ -1,11 +1,7 @@
 import { FileText } from 'lucide-react'
 import Link from 'next/link'
 
-import { useSession } from '@/hooks/useSession'
-
 export const Header = () => {
-  const { user, isPending } = useSession()
-
   return (
     <header className="bg-background/30 sticky top-0 left-0 z-50 border-b backdrop-blur-sm">
       <div className="container mx-auto flex items-center justify-between px-4 py-4">

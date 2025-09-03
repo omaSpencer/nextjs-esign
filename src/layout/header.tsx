@@ -3,8 +3,6 @@ import Link from 'next/link'
 
 import { useSession } from '@/hooks/useSession'
 
-import { AuthButtons } from './auth-buttons'
-
 export const Header = () => {
   const { user, isPending } = useSession()
 
@@ -27,8 +25,6 @@ export const Header = () => {
           >
             How it Works
           </Link>
-
-          <AuthButtons user={user} isPending={isPending} />
         </nav>
       </div>
     </header>

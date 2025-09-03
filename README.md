@@ -77,48 +77,12 @@ window.location.href = consentUrl
 const jwtResponse = await fetch('/api/oauth/jwt', { method: 'POST' })
 ```
 
-### Envelope létrehozás
-
-```typescript
-const envelopeData = {
-  subject: 'Szerződés aláírás',
-  message: 'Kérjük, írja alá a szerződést',
-  signers: [
-    {
-      email: 'user@example.com',
-      name: 'John Doe',
-      recipientId: '1'
-    }
-  ],
-  documents: [
-    {
-      name: 'contract.pdf',
-      content: 'base64-encoded-pdf-content',
-      fileExtension: 'pdf',
-      documentId: '1',
-      placeholders: {
-        'name': 'John Doe',
-        'date': '2024-01-01'
-      }
-    }
-  ]
-}
-
-const response = await fetch('/api/envelope', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(envelopeData)
-})
-```
-
 ## API Endpoints
 
 - `POST /api/oauth/jwt` - JWT token generálása
 - `GET /api/oauth/consent` - Felhasználói hozzájárulás kezelése
 - `GET /api/oauth/callback` - Consent callback feldolgozása
 - `GET /api/oauth/userinfo` - Felhasználói információk lekérése
-- `POST /api/envelope` - Envelope létrehozása és elküldése
-- `GET /api/envelope` - Envelope service állapot ellenőrzése
 - `GET /api/test-env` - Környezeti változók ellenőrzése
 
 ## Fejlesztés

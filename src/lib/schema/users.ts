@@ -18,7 +18,7 @@ export const users = pgTable(
       .notNull(),
     lastLogin: timestamp('last_login'),
   },
-  t => [
+  (t) => [
     index('idx_users_status').on(t.status),
     index('idx_users_created_at').on(t.createdAt),
     index('idx_users_last_login').on(t.lastLogin),

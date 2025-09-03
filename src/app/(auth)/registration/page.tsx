@@ -8,7 +8,14 @@ import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -38,7 +45,7 @@ export default function RegistrationPage() {
       form.reset()
       router.push('/')
     },
-    onError: err => {
+    onError: (err) => {
       toast.error(err.message)
     },
   })
@@ -79,7 +86,9 @@ export default function RegistrationPage() {
                 </FormItem>
               )}
             />
-            {(error || isError) && <div className="text-destructive text-center text-sm">{error.message}</div>}
+            {(error || isError) && (
+              <div className="text-destructive text-center text-sm">{error.message}</div>
+            )}
 
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? 'Registering...' : 'Register'}

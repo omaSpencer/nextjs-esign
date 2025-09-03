@@ -11,11 +11,11 @@ import UserInfoForm from '@/blocks/user-info-form'
 export default function ProfilePage() {
   const { user, isPending } = useSession()
 
-  if(isPending){
+  if (isPending) {
     return null
   }
 
-  if(!user?.sub && !isPending){
+  if (!user?.sub && !isPending) {
     notFound()
   }
 

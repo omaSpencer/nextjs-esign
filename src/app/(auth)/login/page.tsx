@@ -9,7 +9,14 @@ import { z } from 'zod'
 
 import { userSchema } from '@/lib/schema/users'
 
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -43,7 +50,7 @@ export default function LoginPage() {
         router.push('/')
       }
     },
-    onError: err => {
+    onError: (err) => {
       toast.error(err.message)
     },
   })
@@ -84,7 +91,9 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            {(error || isError) && <div className="text-destructive text-center text-sm">{error.message}</div>}
+            {(error || isError) && (
+              <div className="text-destructive text-center text-sm">{error.message}</div>
+            )}
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? 'Logging in...' : 'Login'}
             </Button>

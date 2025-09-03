@@ -25,7 +25,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-
 export default function AdminHeader({
   isCreateDialogOpen,
   setIsCreateDialogOpen,

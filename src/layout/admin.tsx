@@ -1,14 +1,27 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
@@ -16,10 +29,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { CalendarDays, FileText, Mail, Plus, Search, Users } from "lucide-react"
+} from '@/components/ui/dialog'
+import { CalendarDays, FileText, Mail, Plus, Search, Users } from 'lucide-react'
 
-type ContractStatus = "draft" | "sent" | "signed" | "completed" | "declined" | "expired"
+type ContractStatus = 'draft' | 'sent' | 'signed' | 'completed' | 'declined' | 'expired'
 
 interface Contract {
   id: string
@@ -35,75 +48,75 @@ interface Contract {
 }
 
 const statusColors: Record<ContractStatus, string> = {
-  draft: "bg-gray-100 text-gray-800",
-  sent: "bg-blue-100 text-blue-800",
-  signed: "bg-green-100 text-green-800",
-  completed: "bg-emerald-100 text-emerald-800",
-  declined: "bg-red-100 text-red-800",
-  expired: "bg-orange-100 text-orange-800",
+  draft: 'bg-gray-100 text-gray-800',
+  sent: 'bg-blue-100 text-blue-800',
+  signed: 'bg-green-100 text-green-800',
+  completed: 'bg-emerald-100 text-emerald-800',
+  declined: 'bg-red-100 text-red-800',
+  expired: 'bg-orange-100 text-orange-800',
 }
 
 const mockContracts: Contract[] = [
   {
-    id: "1",
-    recipientName: "John Smith",
-    recipientEmail: "john.smith@example.com",
-    contractType: "Employment Agreement",
-    subject: "Employment Contract - Software Engineer",
-    message: "Please review and sign your employment agreement.",
-    status: "signed",
-    createdAt: "2024-01-15T10:30:00Z",
-    sentAt: "2024-01-15T10:35:00Z",
-    signedAt: "2024-01-16T14:20:00Z",
+    id: '1',
+    recipientName: 'John Smith',
+    recipientEmail: 'john.smith@example.com',
+    contractType: 'Employment Agreement',
+    subject: 'Employment Contract - Software Engineer',
+    message: 'Please review and sign your employment agreement.',
+    status: 'signed',
+    createdAt: '2024-01-15T10:30:00Z',
+    sentAt: '2024-01-15T10:35:00Z',
+    signedAt: '2024-01-16T14:20:00Z',
   },
   {
-    id: "2",
-    recipientName: "Sarah Johnson",
-    recipientEmail: "sarah.johnson@example.com",
-    contractType: "NDA",
-    subject: "Non-Disclosure Agreement",
-    message: "Please sign the NDA before we proceed with the project discussion.",
-    status: "sent",
-    createdAt: "2024-01-16T09:15:00Z",
-    sentAt: "2024-01-16T09:20:00Z",
+    id: '2',
+    recipientName: 'Sarah Johnson',
+    recipientEmail: 'sarah.johnson@example.com',
+    contractType: 'NDA',
+    subject: 'Non-Disclosure Agreement',
+    message: 'Please sign the NDA before we proceed with the project discussion.',
+    status: 'sent',
+    createdAt: '2024-01-16T09:15:00Z',
+    sentAt: '2024-01-16T09:20:00Z',
   },
   {
-    id: "3",
-    recipientName: "Michael Brown",
-    recipientEmail: "michael.brown@example.com",
-    contractType: "Service Agreement",
-    subject: "Consulting Services Contract",
-    message: "Please review and sign the consulting agreement.",
-    status: "draft",
-    createdAt: "2024-01-17T11:45:00Z",
+    id: '3',
+    recipientName: 'Michael Brown',
+    recipientEmail: 'michael.brown@example.com',
+    contractType: 'Service Agreement',
+    subject: 'Consulting Services Contract',
+    message: 'Please review and sign the consulting agreement.',
+    status: 'draft',
+    createdAt: '2024-01-17T11:45:00Z',
   },
   {
-    id: "4",
-    recipientName: "Emily Davis",
-    recipientEmail: "emily.davis@example.com",
-    contractType: "Partnership Agreement",
-    subject: "Business Partnership Contract",
-    message: "Partnership agreement for our upcoming collaboration.",
-    status: "completed",
-    createdAt: "2024-01-10T08:00:00Z",
-    sentAt: "2024-01-10T08:05:00Z",
-    signedAt: "2024-01-12T16:30:00Z",
+    id: '4',
+    recipientName: 'Emily Davis',
+    recipientEmail: 'emily.davis@example.com',
+    contractType: 'Partnership Agreement',
+    subject: 'Business Partnership Contract',
+    message: 'Partnership agreement for our upcoming collaboration.',
+    status: 'completed',
+    createdAt: '2024-01-10T08:00:00Z',
+    sentAt: '2024-01-10T08:05:00Z',
+    signedAt: '2024-01-12T16:30:00Z',
   },
 ]
 
 export default function AdminDashboard() {
   const [contracts, setContracts] = useState<Contract[]>(mockContracts)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 
   // Form state
   const [formData, setFormData] = useState({
-    recipientName: "",
-    recipientEmail: "",
-    contractType: "",
-    subject: "",
-    message: "",
+    recipientName: '',
+    recipientEmail: '',
+    contractType: '',
+    subject: '',
+    message: '',
   })
 
   const filteredContracts = contracts.filter((contract) => {
@@ -111,43 +124,50 @@ export default function AdminDashboard() {
       contract.recipientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contract.recipientEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contract.contractType.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || contract.status === statusFilter
+    const matchesStatus = statusFilter === 'all' || contract.status === statusFilter
     return matchesSearch && matchesStatus
   })
 
   const handleStatusChange = (contractId: string, newStatus: ContractStatus) => {
     setContracts((prev) =>
-      prev.map((contract) => (contract.id === contractId ? { ...contract, status: newStatus } : contract)),
+      prev.map((contract) =>
+        contract.id === contractId ? { ...contract, status: newStatus } : contract,
+      ),
     )
   }
 
   const handleCreateContract = async () => {
-    if (!formData.recipientName || !formData.recipientEmail || !formData.contractType || !formData.subject) {
-      alert("Please fill in all required fields")
+    if (
+      !formData.recipientName ||
+      !formData.recipientEmail ||
+      !formData.contractType ||
+      !formData.subject
+    ) {
+      alert('Please fill in all required fields')
       return
     }
 
     const newContract: Contract = {
       id: Date.now().toString(),
       ...formData,
-      status: "draft",
+      status: 'draft',
       createdAt: new Date().toISOString(),
     }
 
     setContracts((prev) => [newContract, ...prev])
     setFormData({
-      recipientName: "",
-      recipientEmail: "",
-      contractType: "",
-      subject: "",
-      message: "",
+      recipientName: '',
+      recipientEmail: '',
+      contractType: '',
+      subject: '',
+      message: '',
     })
     setIsCreateDialogOpen(false)
   }
 
   const handleSendEnvelope = async (contractId: string) => {
     // Mock DocuSign API call
-    console.log("Sending DocuSign envelope for contract:", contractId)
+    console.log('Sending DocuSign envelope for contract:', contractId)
 
     // Simulate API call
     setTimeout(() => {
@@ -156,13 +176,13 @@ export default function AdminDashboard() {
           contract.id === contractId
             ? {
                 ...contract,
-                status: "sent" as ContractStatus,
+                status: 'sent' as ContractStatus,
                 sentAt: new Date().toISOString(),
               }
             : contract,
         ),
       )
-      alert("Envelope sent successfully!")
+      alert('Envelope sent successfully!')
     }, 1000)
   }
 
@@ -188,7 +208,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50/50">
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="container mx-auto space-y-6 p-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -198,14 +218,16 @@ export default function AdminDashboard() {
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 New Contract
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
               <DialogHeader>
                 <DialogTitle>Create New Contract</DialogTitle>
-                <DialogDescription>Fill out the contract details to create a new DocuSign envelope.</DialogDescription>
+                <DialogDescription>
+                  Fill out the contract details to create a new DocuSign envelope.
+                </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -214,7 +236,9 @@ export default function AdminDashboard() {
                     <Input
                       id="recipientName"
                       value={formData.recipientName}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, recipientName: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, recipientName: e.target.value }))
+                      }
                       placeholder="John Smith"
                     />
                   </div>
@@ -224,7 +248,9 @@ export default function AdminDashboard() {
                       id="recipientEmail"
                       type="email"
                       value={formData.recipientEmail}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, recipientEmail: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, recipientEmail: e.target.value }))
+                      }
                       placeholder="john@example.com"
                     />
                   </div>
@@ -233,7 +259,9 @@ export default function AdminDashboard() {
                   <Label htmlFor="contractType">Contract Type *</Label>
                   <Select
                     value={formData.contractType}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, contractType: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, contractType: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select contract type" />
@@ -282,7 +310,7 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Contracts</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <FileText className="text-muted-foreground h-4 w-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{statusCounts.total}</div>
@@ -291,7 +319,7 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Draft</CardTitle>
-              <CalendarDays className="h-4 w-4 text-muted-foreground" />
+              <CalendarDays className="text-muted-foreground h-4 w-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{statusCounts.draft}</div>
@@ -300,7 +328,7 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Sent</CardTitle>
-              <Mail className="h-4 w-4 text-muted-foreground" />
+              <Mail className="text-muted-foreground h-4 w-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{statusCounts.sent}</div>
@@ -309,7 +337,7 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Completed</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <Users className="text-muted-foreground h-4 w-4" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{statusCounts.completed}</div>
@@ -324,9 +352,9 @@ export default function AdminDashboard() {
             <CardDescription>View and manage all contract applications</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="mb-6 flex items-center space-x-4">
+              <div className="relative max-w-sm flex-1">
+                <Search className="text-muted-foreground absolute top-2.5 left-2 h-4 w-4" />
                 <Input
                   placeholder="Search contracts..."
                   value={searchTerm}
@@ -369,7 +397,9 @@ export default function AdminDashboard() {
                       <TableCell>
                         <div>
                           <div className="font-medium">{contract.recipientName}</div>
-                          <div className="text-sm text-muted-foreground">{contract.recipientEmail}</div>
+                          <div className="text-muted-foreground text-sm">
+                            {contract.recipientEmail}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>{contract.contractType}</TableCell>
@@ -382,16 +412,18 @@ export default function AdminDashboard() {
                       <TableCell>{new Date(contract.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          {contract.status === "draft" && (
+                          {contract.status === 'draft' && (
                             <Button size="sm" onClick={() => handleSendEnvelope(contract.id)}>
                               Send
                             </Button>
                           )}
                           <Select
                             value={contract.status}
-                            onValueChange={(value: ContractStatus) => handleStatusChange(contract.id, value)}
+                            onValueChange={(value: ContractStatus) =>
+                              handleStatusChange(contract.id, value)
+                            }
                           >
-                            <SelectTrigger className="w-[120px] h-8">
+                            <SelectTrigger className="h-8 w-[120px]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -412,13 +444,13 @@ export default function AdminDashboard() {
             </div>
 
             {filteredContracts.length === 0 && (
-              <div className="text-center py-8">
-                <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
+              <div className="py-8 text-center">
+                <FileText className="text-muted-foreground mx-auto h-12 w-12" />
                 <h3 className="mt-2 text-sm font-semibold text-gray-900">No contracts found</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {searchTerm || statusFilter !== "all"
-                    ? "Try adjusting your search or filter criteria."
-                    : "Get started by creating a new contract."}
+                <p className="text-muted-foreground mt-1 text-sm">
+                  {searchTerm || statusFilter !== 'all'
+                    ? 'Try adjusting your search or filter criteria.'
+                    : 'Get started by creating a new contract.'}
                 </p>
               </div>
             )}

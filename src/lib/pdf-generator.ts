@@ -49,6 +49,26 @@ export async function generateContractPDF(contractData: ContractData): Promise<s
     }
   )
 
+  // Add signature placeholder
+  page.drawText(
+    'Aláírás helye:',
+    {
+      x: margin,
+      y: height - margin - 200,
+      size: 12,
+      font: font,
+      color: rgb(0, 0, 0),
+    }
+  )
+
+  // Add signature line
+  page.drawLine({
+    start: { x: margin, y: height - margin - 220 },
+    end: { x: margin + 200, y: height - margin - 220 },
+    thickness: 1,
+    color: rgb(0, 0, 0),
+  })
+
   const pdfBytes = await pdfDoc.save()
   return Buffer.from(pdfBytes).toString('base64')
 }

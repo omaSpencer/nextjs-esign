@@ -112,7 +112,22 @@ export class DocuSignEnvelopeService {
 
       const envelopeData = envelopeResponse.data as DocuSignEnvelopeData
       const envelopeId = envelopeData.envelopeId
-      const status = envelopeData.status
+      let status = envelopeData.status
+
+      // Send the envelope if it was created
+      if (status === 'created') {
+        const sendResponse = await axios.put(
+          `${this.baseUrl}/v2.1/accounts/${this.accountId}/envelopes/${envelopeId}`,
+          { status: 'sent' },
+          {
+            headers: {
+              'Authorization': `Bearer ${this.accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        status = (sendResponse.data as { status?: string }).status || 'sent'
+      }
 
       // Get signing URL for embedded signing
       const signingUrl = await this.getSigningUrl(envelopeId, request.signerEmail, request.signerName)
@@ -159,11 +174,12 @@ export class DocuSignEnvelopeService {
             name: request.signerName,
             recipientId: '1',
             routingOrder: '1',
+            clientUserId: '1000', // Required for embedded signing
             tabs: this.organizeTabs(allTabs),
           },
         ],
       },
-      status: 'sent',
+      status: 'created', // Use 'created' for embedded signing, then send separately
     }
   }
 
@@ -182,48 +198,6 @@ export class DocuSignEnvelopeService {
         documentId: '1',
         pageNumber: '1',
         tabLabel: 'MainSignature',
-      },
-      // Individual signature areas
-      {
-        type: 'signHere',
-        anchorString: '[[Nev]] aláírása',
-        anchorXOffset: '0',
-        anchorYOffset: '20',
-        anchorUnits: 'pixels',
-        documentId: '1',
-        pageNumber: '1',
-        tabLabel: 'SignerSignature',
-      },
-      {
-        type: 'signHere',
-        anchorString: '[[Ceg neve]] aláírása',
-        anchorXOffset: '0',
-        anchorYOffset: '20',
-        anchorUnits: 'pixels',
-        documentId: '1',
-        pageNumber: '1',
-        tabLabel: 'CompanySignature',
-      },
-      {
-        type: 'signHere',
-        anchorString: 'Tanu aláírása',
-        anchorXOffset: '0',
-        anchorYOffset: '20',
-        anchorUnits: 'pixels',
-        documentId: '1',
-        pageNumber: '1',
-        tabLabel: 'WitnessSignature',
-      },
-      // Date fields
-      {
-        type: 'dateSigned',
-        anchorString: 'Datum: [[Datum]]',
-        anchorXOffset: '0',
-        anchorYOffset: '0',
-        anchorUnits: 'pixels',
-        documentId: '1',
-        pageNumber: '1',
-        tabLabel: 'DateSigned',
       },
     ]
   }
@@ -248,7 +222,6 @@ export class DocuSignEnvelopeService {
             tabLabel: tab.tabLabel,
           })
           break
-
         case 'dateSigned':
           if (!organized.dateSignedTabs) organized.dateSignedTabs = []
           organized.dateSignedTabs.push({
@@ -261,7 +234,6 @@ export class DocuSignEnvelopeService {
             tabLabel: tab.tabLabel,
           })
           break
-
         case 'text':
           if (!organized.textTabs) organized.textTabs = []
           organized.textTabs.push({
@@ -275,7 +247,6 @@ export class DocuSignEnvelopeService {
             value: tab.value,
           })
           break
-
         case 'checkbox':
           if (!organized.checkboxTabs) organized.checkboxTabs = []
           organized.checkboxTabs.push({
@@ -286,7 +257,7 @@ export class DocuSignEnvelopeService {
             documentId: tab.documentId || '1',
             pageNumber: tab.pageNumber || '1',
             tabLabel: tab.tabLabel,
-            selected: tab.value === 'true',
+            selected: false,
           })
           break
       }

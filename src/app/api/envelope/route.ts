@@ -3,9 +3,15 @@ import { DocuSignEnvelopeService } from '@/lib/docusign-envelope'
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData()
-    const signerName = formData.get('signerName') as string
-    const signerEmail = formData.get('signerEmail') as string
+    const body = await request.json()
+    const { 
+      signerName, 
+      signerEmail, 
+      base64PDF, 
+      documentName, 
+      emailSubject, 
+      emailBlurb 
+    } = body
 
     if (!signerName || !signerEmail) {
       return NextResponse.json(
@@ -49,10 +55,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate PDF if not provided
-    let base64PDF: string
-    if (formData.get('base64PDF')) {
-      base64PDF = formData.get('base64PDF') as string
+    // Use provided PDF or generate default one
+    let finalBase64PDF: string
+    if (base64PDF) {
+      finalBase64PDF = base64PDF
     } else {
       // Generate default contract PDF
       const { generateContractPDF } = await import('@/lib/pdf-generator')
@@ -62,7 +68,7 @@ export async function POST(request: NextRequest) {
         companyName: 'Company Name',
         contractValue: 'Contract Value',
       }
-      base64PDF = await generateContractPDF(contractData)
+      finalBase64PDF = await generateContractPDF(contractData)
     }
 
     // Create DocuSign envelope service
@@ -72,10 +78,10 @@ export async function POST(request: NextRequest) {
     const result = await envelopeService.createEnvelope({
       signerName,
       signerEmail,
-      base64PDF,
-      documentName: 'Contract',
-      emailSubject: 'Please sign this contract',
-      emailBlurb: 'Please review and sign the attached contract document.',
+      base64PDF: finalBase64PDF,
+      documentName: documentName || 'Contract',
+      emailSubject: emailSubject || 'Please sign this contract',
+      emailBlurb: emailBlurb || 'Please review and sign the attached contract document.',
     })
 
     return NextResponse.json({

@@ -84,7 +84,11 @@ export class DocuSignEnvelopeService {
   private accountId: string
   private baseUrl: string
 
-  constructor(accessToken: string, accountId: string, baseUrl: string = 'https://demo.docusign.net/restapi') {
+  constructor(
+    accessToken: string,
+    accountId: string,
+    baseUrl: string = 'https://demo.docusign.net/restapi',
+  ) {
     this.accessToken = accessToken
     this.accountId = accountId
     this.baseUrl = baseUrl
@@ -104,10 +108,10 @@ export class DocuSignEnvelopeService {
         envelopeDefinition,
         {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
             'Content-Type': 'application/json',
           },
-        }
+        },
       )
 
       const envelopeData = envelopeResponse.data as DocuSignEnvelopeData
@@ -121,16 +125,20 @@ export class DocuSignEnvelopeService {
           { status: 'sent' },
           {
             headers: {
-              'Authorization': `Bearer ${this.accessToken}`,
+              Authorization: `Bearer ${this.accessToken}`,
               'Content-Type': 'application/json',
             },
-          }
+          },
         )
         status = (sendResponse.data as { status?: string }).status || 'sent'
       }
 
       // Get signing URL for embedded signing
-      const signingUrl = await this.getSigningUrl(envelopeId, request.signerEmail, request.signerName)
+      const signingUrl = await this.getSigningUrl(
+        envelopeId,
+        request.signerEmail,
+        request.signerName,
+      )
 
       return {
         envelopeId,
@@ -142,9 +150,13 @@ export class DocuSignEnvelopeService {
       // Handle axios errors
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: { errorCode?: string } } }
-        throw new Error(`DocuSign API error: ${axiosError.response?.data?.errorCode || 'Unknown error'}`)
+        throw new Error(
+          `DocuSign API error: ${axiosError.response?.data?.errorCode || 'Unknown error'}`,
+        )
       }
-      throw new Error(`Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(
+        `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      )
     }
   }
 
@@ -269,7 +281,11 @@ export class DocuSignEnvelopeService {
   /**
    * Get signing URL for embedded signing
    */
-  private async getSigningUrl(envelopeId: string, signerEmail: string, signerName: string): Promise<string> {
+  private async getSigningUrl(
+    envelopeId: string,
+    signerEmail: string,
+    signerName: string,
+  ): Promise<string> {
     const response = await axios.post(
       `${this.baseUrl}/v2.1/accounts/${this.accountId}/envelopes/${envelopeId}/views/recipient`,
       {
@@ -281,10 +297,10 @@ export class DocuSignEnvelopeService {
       },
       {
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
           'Content-Type': 'application/json',
         },
-      }
+      },
     )
 
     const signingUrlData = response.data as DocuSignSigningUrlData
@@ -299,9 +315,9 @@ export class DocuSignEnvelopeService {
       `${this.baseUrl}/v2.1/accounts/${this.accountId}/envelopes/${envelopeId}`,
       {
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
         },
-      }
+      },
     )
 
     return response.data as Record<string, unknown>
@@ -313,17 +329,17 @@ export class DocuSignEnvelopeService {
   async listEnvelopes(fromDate?: string, toDate?: string): Promise<Record<string, unknown>> {
     let url = `${this.baseUrl}/v2.1/accounts/${this.accountId}/envelopes`
     const params = new URLSearchParams()
-    
+
     if (fromDate) params.append('from_date', fromDate)
     if (toDate) params.append('to_date', toDate)
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`
     }
 
     const response = await axios.get(url, {
       headers: {
-        'Authorization': `Bearer ${this.accessToken}`,
+        Authorization: `Bearer ${this.accessToken}`,
       },
     })
 

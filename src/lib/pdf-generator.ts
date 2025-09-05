@@ -13,8 +13,8 @@ export async function generateContractPDF(contractData: ContractData): Promise<s
   pdfDoc.registerFontkit(fontkit)
 
   // 🔹 Font betöltése a /public/fonts mappából
-  const fontBytes = await fetch('/fonts/Roboto-Regular.ttf').then(res => res.arrayBuffer())
-  const boldFontBytes = await fetch('/fonts/Roboto-Bold.ttf').then(res => res.arrayBuffer())
+  const fontBytes = await fetch('/fonts/Roboto-Regular.ttf').then((res) => res.arrayBuffer())
+  const boldFontBytes = await fetch('/fonts/Roboto-Bold.ttf').then((res) => res.arrayBuffer())
 
   const font = await pdfDoc.embedFont(fontBytes)
   const boldFont = await pdfDoc.embedFont(boldFontBytes)
@@ -46,20 +46,17 @@ export async function generateContractPDF(contractData: ContractData): Promise<s
       font: font,
       color: rgb(0, 0, 0),
       maxWidth: contentWidth,
-    }
+    },
   )
 
   // Add signature placeholder
-  page.drawText(
-    'Aláírás helye:',
-    {
-      x: margin,
-      y: height - margin - 200,
-      size: 12,
-      font: font,
-      color: rgb(0, 0, 0),
-    }
-  )
+  page.drawText('Aláírás helye:', {
+    x: margin,
+    y: height - margin - 200,
+    size: 12,
+    font: font,
+    color: rgb(0, 0, 0),
+  })
 
   // Add signature line
   page.drawLine({

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import AfterSigningContent from '@/blocks/after-signing-content'
+import AfterSigningContent from '@/components/after-signing-content'
 
 export default function AfterSigningPage() {
   return (

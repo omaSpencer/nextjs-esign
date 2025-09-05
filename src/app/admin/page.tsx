@@ -12,7 +12,7 @@ import type {
 import { DefaultLayout } from '@/layout/default'
 
 import AdminHeader from './header'
-import StatsCards from './stats-cars'
+import StatsCards from './stats-cards'
 import FiltersAndSearch from './filters-and-search'
 
 //! TODO: Remove mock contracts

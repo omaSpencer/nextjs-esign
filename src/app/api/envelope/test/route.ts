@@ -27,9 +27,6 @@ export async function GET() {
     })
   } catch (error) {
     console.error('Test PDF generation error:', error)
-    return NextResponse.json(
-      { error: 'Failed to generate test PDF' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to generate test PDF' }, { status: 500 })
   }
 }

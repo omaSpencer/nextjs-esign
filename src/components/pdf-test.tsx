@@ -1,55 +1,55 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { generateContractPDF, downloadPDF, ContractData } from '@/lib/pdf-generator';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { generateContractPDF, downloadPDF, ContractData } from '@/lib/pdf-generator'
 
 export default function PDFTest() {
   const [contractData, setContractData] = useState<ContractData>({
     name: '',
     date: new Date().toLocaleDateString('hu-HU'),
     companyName: '',
-    contractValue: ''
-  });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [base64PDF, setBase64PDF] = useState<string>('');
+    contractValue: '',
+  })
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [base64PDF, setBase64PDF] = useState<string>('')
 
   const handleInputChange = (field: keyof ContractData, value: string) => {
-    setContractData(prev => ({
+    setContractData((prev) => ({
       ...prev,
-      [field]: value
-    }));
-  };
+      [field]: value,
+    }))
+  }
 
   const handleGeneratePDF = async () => {
     if (!contractData.name.trim()) {
-      alert('Kérjük, adja meg a nevet!');
-      return;
+      alert('Kérjük, adja meg a nevet!')
+      return
     }
 
-    setIsGenerating(true);
+    setIsGenerating(true)
     try {
-      const base64 = await generateContractPDF(contractData);
-      setBase64PDF(base64);
+      const base64 = await generateContractPDF(contractData)
+      setBase64PDF(base64)
     } catch (error) {
-      console.error('PDF generálási hiba:', error);
-      alert('Hiba történt a PDF generálása során!');
+      console.error('PDF generálási hiba:', error)
+      alert('Hiba történt a PDF generálása során!')
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
 
   const handleDownload = () => {
     if (base64PDF) {
-      downloadPDF(base64PDF, `szerzodes_${contractData.name.replace(/\s+/g, '_')}.pdf`);
+      downloadPDF(base64PDF, `szerzodes_${contractData.name.replace(/\s+/g, '_')}.pdf`)
     }
-  };
+  }
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl">
+    <div className="container mx-auto max-w-2xl p-6">
       <Card>
         <CardHeader>
           <CardTitle>PDF Szerződés Generátor</CardTitle>
@@ -96,31 +96,28 @@ export default function PDFTest() {
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button 
-              onClick={handleGeneratePDF} 
+            <Button
+              onClick={handleGeneratePDF}
               disabled={isGenerating || !contractData.name.trim()}
               className="flex-1"
             >
               {isGenerating ? 'Generálás...' : 'PDF Generálása'}
             </Button>
-            
+
             {base64PDF && (
-              <Button 
-                onClick={handleDownload}
-                variant="outline"
-                className="flex-1"
-              >
+              <Button onClick={handleDownload} variant="outline" className="flex-1">
                 PDF Letöltése
               </Button>
             )}
           </div>
 
           {base64PDF && (
-            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-800 text-sm">
-                ✓ PDF sikeresen generálva! Kattintson a &quot;PDF Letöltése&quot; gombra a letöltéshez.
+            <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
+              <p className="text-sm text-green-800">
+                ✓ PDF sikeresen generálva! Kattintson a &quot;PDF Letöltése&quot; gombra a
+                letöltéshez.
               </p>
-              <p className="text-green-600 text-xs mt-2">
+              <p className="mt-2 text-xs text-green-600">
                 Base64 hossz: {base64PDF.length} karakter
               </p>
             </div>
@@ -128,5 +125,5 @@ export default function PDFTest() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

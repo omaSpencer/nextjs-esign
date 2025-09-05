@@ -4,20 +4,10 @@ import { DocuSignEnvelopeService } from '@/lib/docusign-envelope'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      signerName, 
-      signerEmail, 
-      base64PDF, 
-      documentName, 
-      emailSubject, 
-      emailBlurb 
-    } = body
+    const { signerName, signerEmail, base64PDF, documentName, emailSubject, emailBlurb } = body
 
     if (!signerName || !signerEmail) {
-      return NextResponse.json(
-        { error: 'Signer name and email are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Signer name and email are required' }, { status: 400 })
     }
 
     // Get JWT token for DocuSign authentication
@@ -34,13 +24,10 @@ export async function POST(request: NextRequest) {
             message: 'User consent is required. Please call /api/oauth/consent first.',
             consentEndpoint: '/api/oauth/consent',
           },
-          { status: 403 }
+          { status: 403 },
         )
       }
-      return NextResponse.json(
-        { error: 'Failed to get JWT token' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to get JWT token' }, { status: 500 })
     }
 
     const jwtData = await jwtResponse.json()
@@ -49,10 +36,7 @@ export async function POST(request: NextRequest) {
     // Get account ID from environment
     const accountId = process.env.DOCUSIGN_ACCOUNT_ID
     if (!accountId) {
-      return NextResponse.json(
-        { error: 'DocuSign account ID not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'DocuSign account ID not configured' }, { status: 500 })
     }
 
     // Use provided PDF or generate default one
@@ -88,16 +72,15 @@ export async function POST(request: NextRequest) {
       success: true,
       ...result,
     })
-
   } catch (error) {
     console.error('Envelope creation error:', error)
-    
+
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to create DocuSign envelope',
         details: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

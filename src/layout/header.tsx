@@ -11,17 +11,6 @@ export const Header = () => {
             <span className="text-foreground text-2xl font-bold">DocuFlow</span>
           </Link>
         </div>
-        <nav className="hidden items-center space-x-6 md:flex">
-          <Link href="/#features" className="text-foreground hover:text-primary transition-colors">
-            Features
-          </Link>
-          <Link
-            href="/#how-it-works"
-            className="text-foreground hover:text-primary transition-colors"
-          >
-            How it Works
-          </Link>
-        </nav>
       </div>
     </header>
   )

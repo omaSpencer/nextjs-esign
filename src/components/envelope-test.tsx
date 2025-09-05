@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { generateContractPDF, downloadPDF, ContractData } from '@/lib/pdf-generator';
-import { DocuSignEnvelopeRequest } from '@/lib/docusign-envelope';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { generateContractPDF, downloadPDF, ContractData } from '@/lib/pdf-generator'
+import { DocuSignEnvelopeRequest } from '@/lib/docusign-envelope'
 
 interface EnvelopeTestData extends ContractData {
-  signerName: string;
-  signerEmail: string;
-  documentName?: string;
-  emailSubject?: string;
-  emailBlurb?: string;
+  signerName: string
+  signerEmail: string
+  documentName?: string
+  emailSubject?: string
+  emailBlurb?: string
 }
 
 export default function EnvelopeTest() {
@@ -26,61 +26,61 @@ export default function EnvelopeTest() {
     signerEmail: '',
     documentName: 'Szerződés',
     emailSubject: 'Kérjük, írja alá ezt a dokumentumot',
-    emailBlurb: 'Kérjük, tekintse át és írja alá a mellékelt dokumentumot.'
-  });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [isCreatingEnvelope, setIsCreatingEnvelope] = useState(false);
-  const [base64PDF, setBase64PDF] = useState<string>('');
+    emailBlurb: 'Kérjük, tekintse át és írja alá a mellékelt dokumentumot.',
+  })
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isCreatingEnvelope, setIsCreatingEnvelope] = useState(false)
+  const [base64PDF, setBase64PDF] = useState<string>('')
   const [envelopeResult, setEnvelopeResult] = useState<{
-    envelopeId: string;
-    status: string;
-    signingUrl: string;
-    message: string;
-  } | null>(null);
+    envelopeId: string
+    status: string
+    signingUrl: string
+    message: string
+  } | null>(null)
 
   const handleInputChange = (field: keyof EnvelopeTestData, value: string) => {
-    setEnvelopeData(prev => ({
+    setEnvelopeData((prev) => ({
       ...prev,
-      [field]: value
-    }));
-  };
+      [field]: value,
+    }))
+  }
 
   const handleGeneratePDF = async () => {
     if (!envelopeData.name.trim()) {
-      alert('Kérjük, adja meg a nevet!');
-      return;
+      alert('Kérjük, adja meg a nevet!')
+      return
     }
 
-    setIsGenerating(true);
+    setIsGenerating(true)
     try {
       const contractData: ContractData = {
         name: envelopeData.name,
         date: envelopeData.date,
         companyName: envelopeData.companyName,
-        contractValue: envelopeData.contractValue
-      };
-      const base64 = await generateContractPDF(contractData);
-      setBase64PDF(base64);
+        contractValue: envelopeData.contractValue,
+      }
+      const base64 = await generateContractPDF(contractData)
+      setBase64PDF(base64)
     } catch (error) {
-      console.error('PDF generálási hiba:', error);
-      alert('Hiba történt a PDF generálása során!');
+      console.error('PDF generálási hiba:', error)
+      alert('Hiba történt a PDF generálása során!')
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
 
   const handleCreateEnvelope = async () => {
     if (!base64PDF) {
-      alert('Először generálja le a PDF-t!');
-      return;
+      alert('Először generálja le a PDF-t!')
+      return
     }
 
     if (!envelopeData.signerName.trim() || !envelopeData.signerEmail.trim()) {
-      alert('Kérjük, adja meg az aláíró nevét és email címét!');
-      return;
+      alert('Kérjük, adja meg az aláíró nevét és email címét!')
+      return
     }
 
-    setIsCreatingEnvelope(true);
+    setIsCreatingEnvelope(true)
     try {
       const envelopeRequest: DocuSignEnvelopeRequest = {
         signerName: envelopeData.signerName,
@@ -88,8 +88,8 @@ export default function EnvelopeTest() {
         base64PDF: base64PDF,
         documentName: envelopeData.documentName,
         emailSubject: envelopeData.emailSubject,
-        emailBlurb: envelopeData.emailBlurb
-      };
+        emailBlurb: envelopeData.emailBlurb,
+      }
 
       const response = await fetch('/api/envelope', {
         method: 'POST',
@@ -97,37 +97,37 @@ export default function EnvelopeTest() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(envelopeRequest),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const result = await response.json();
-      setEnvelopeResult(result);
+      const result = await response.json()
+      setEnvelopeResult(result)
     } catch (error) {
-      console.error('Envelope létrehozási hiba:', error);
-      alert('Hiba történt az envelope létrehozása során!');
+      console.error('Envelope létrehozási hiba:', error)
+      alert('Hiba történt az envelope létrehozása során!')
     } finally {
-      setIsCreatingEnvelope(false);
+      setIsCreatingEnvelope(false)
     }
-  };
+  }
 
   const handleDownload = () => {
     if (base64PDF) {
-      downloadPDF(base64PDF, `szerzodes_${envelopeData.name.replace(/\s+/g, '_')}.pdf`);
+      downloadPDF(base64PDF, `szerzodes_${envelopeData.name.replace(/\s+/g, '_')}.pdf`)
     }
-  };
+  }
 
   const handleOpenSigning = () => {
     if (envelopeResult?.signingUrl) {
-      window.open(`/envelope?url=${encodeURIComponent(envelopeResult.signingUrl)}`, '_blank');
+      window.open(`/envelope?url=${encodeURIComponent(envelopeResult.signingUrl)}`, '_blank')
     }
-  };
+  }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="container mx-auto max-w-4xl p-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* PDF Generation Section */}
         <Card>
           <CardHeader>
@@ -175,31 +175,25 @@ export default function EnvelopeTest() {
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button 
-                onClick={handleGeneratePDF} 
+              <Button
+                onClick={handleGeneratePDF}
                 disabled={isGenerating || !envelopeData.name.trim()}
                 className="flex-1"
               >
                 {isGenerating ? 'Generálás...' : 'PDF Generálása'}
               </Button>
-              
+
               {base64PDF && (
-                <Button 
-                  onClick={handleDownload}
-                  variant="outline"
-                  className="flex-1"
-                >
+                <Button onClick={handleDownload} variant="outline" className="flex-1">
                   PDF Letöltése
                 </Button>
               )}
             </div>
 
             {base64PDF && (
-              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800 text-sm">
-                  ✓ PDF sikeresen generálva!
-                </p>
-                <p className="text-green-600 text-xs mt-2">
+              <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
+                <p className="text-sm text-green-800">✓ PDF sikeresen generálva!</p>
+                <p className="mt-2 text-xs text-green-600">
                   Base64 hossz: {base64PDF.length} karakter
                 </p>
               </div>
@@ -265,9 +259,14 @@ export default function EnvelopeTest() {
             </div>
 
             <div className="pt-4">
-              <Button 
-                onClick={handleCreateEnvelope} 
-                disabled={isCreatingEnvelope || !base64PDF || !envelopeData.signerName.trim() || !envelopeData.signerEmail.trim()}
+              <Button
+                onClick={handleCreateEnvelope}
+                disabled={
+                  isCreatingEnvelope ||
+                  !base64PDF ||
+                  !envelopeData.signerName.trim() ||
+                  !envelopeData.signerEmail.trim()
+                }
                 className="w-full"
               >
                 {isCreatingEnvelope ? 'Envelope létrehozása...' : 'Envelope Létrehozása'}
@@ -275,20 +274,22 @@ export default function EnvelopeTest() {
             </div>
 
             {envelopeResult && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-blue-800 text-sm font-semibold mb-2">
+              <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <p className="mb-2 text-sm font-semibold text-blue-800">
                   ✓ Envelope sikeresen létrehozva!
                 </p>
-                <div className="text-blue-700 text-xs space-y-1">
-                  <p><strong>Envelope ID:</strong> {envelopeResult.envelopeId}</p>
-                  <p><strong>Státusz:</strong> {envelopeResult.status}</p>
-                  <p><strong>Üzenet:</strong> {envelopeResult.message}</p>
+                <div className="space-y-1 text-xs text-blue-700">
+                  <p>
+                    <strong>Envelope ID:</strong> {envelopeResult.envelopeId}
+                  </p>
+                  <p>
+                    <strong>Státusz:</strong> {envelopeResult.status}
+                  </p>
+                  <p>
+                    <strong>Üzenet:</strong> {envelopeResult.message}
+                  </p>
                 </div>
-                <Button 
-                  onClick={handleOpenSigning}
-                  className="mt-3 w-full"
-                  variant="outline"
-                >
+                <Button onClick={handleOpenSigning} className="mt-3 w-full" variant="outline">
                   Aláírás megnyitása
                 </Button>
               </div>
@@ -297,5 +298,5 @@ export default function EnvelopeTest() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

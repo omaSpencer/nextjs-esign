@@ -1,4 +1,4 @@
-import { FileText } from 'lucide-react'
+import { ClipboardList, FileText } from 'lucide-react'
 import Link from 'next/link'
 
 export const Header = () => {
@@ -9,6 +9,13 @@ export const Header = () => {
           <Link href="/" className="flex items-center space-x-2">
             <FileText className="text-primary h-8 w-8" />
             <span className="text-foreground text-2xl font-bold">DocuFlow</span>
+          </Link>
+        </div>
+
+        <div>
+          <Link href="/admin" className="flex items-center space-x-2">
+            <ClipboardList className="text-primary h-6 w-6" />
+            <span className="text-foreground text-lg font-bold hidden md:block">Dashboard</span>
           </Link>
         </div>
       </div>

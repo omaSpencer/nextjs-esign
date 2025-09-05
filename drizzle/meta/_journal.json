@@ -22,6 +22,13 @@
       "when": 1751811451980,
       "tag": "0002_nebulous_rhino",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757082244235,
+      "tag": "0003_crazy_lucky_pierre",
+      "breakpoints": true
     }
   ]
 }

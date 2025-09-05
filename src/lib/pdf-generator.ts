@@ -1,4 +1,5 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFDocument, rgb } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 
 export interface ContractData {
   name: string
@@ -8,24 +9,23 @@ export interface ContractData {
 }
 
 export async function generateContractPDF(contractData: ContractData): Promise<string> {
-  // Create a new PDF document
   const pdfDoc = await PDFDocument.create()
+  pdfDoc.registerFontkit(fontkit)
 
-  // Add a page
-  let page = pdfDoc.addPage([595.28, 841.89]) // A4 size in points
+  // 🔹 Font betöltése a /public/fonts mappából
+  const fontBytes = await fetch('/fonts/Roboto-Regular.ttf').then(res => res.arrayBuffer())
+  const boldFontBytes = await fetch('/fonts/Roboto-Bold.ttf').then(res => res.arrayBuffer())
 
-  // Get the standard font - use Helvetica which has better Unicode support
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+  const font = await pdfDoc.embedFont(fontBytes)
+  const boldFont = await pdfDoc.embedFont(boldFontBytes)
 
-  // Set page dimensions
+  const page = pdfDoc.addPage([595.28, 841.89])
   const { width, height } = page.getSize()
   const margin = 50
   const contentWidth = width - 2 * margin
 
-  // Title - center it manually since TextAlignment.Center was removed
-  const titleText = 'Szerzodes'
-  const titleWidth = font.widthOfTextAtSize(titleText, 24)
+  const titleText = 'Szerződés'
+  const titleWidth = boldFont.widthOfTextAtSize(titleText, 24)
   const titleX = margin + (contentWidth - titleWidth) / 2
 
   page.drawText(titleText, {
@@ -34,157 +34,23 @@ export async function generateContractPDF(contractData: ContractData): Promise<s
     size: 24,
     font: boldFont,
     color: rgb(0, 0, 0),
-    maxWidth: contentWidth,
   })
 
-  // Contract content
-  const contractText = [
-    'Ez a szerzodes (a "Szerzodes") a kovetkezo felek kozott jon letre:',
-    '',
-    '1. [[Nev]] (a "Szerzodo Fel")',
-    '2. [[Ceg neve]] (a "Szerzodo Fel")',
-    '',
-    'A felek a kovetkezo felteteleket fogadjak el:',
-    '',
-    '1. SZERZODES TARGYA',
-    'A Szerzodo Felek megallapodnak abban, hogy...',
-    '',
-    '2. SZERZODES IDOTARTAMA',
-    'A Szerzodes [[Datum]] napjan lep hatalyba es...',
-    '',
-    '3. FIZETESI FELTETELEK',
-    'A szerzodeses osszeg: [[Osszeg]]',
-    '',
-    '4. FELELOSSEG',
-    'Minden felelosseg a vonatkozo jogszabalyok szerint...',
-    '',
-    '5. ALAIRAS',
-    'A Szerzodo Felek alairasaval egyetertenek a fenti feltetelekkel.',
-    '',
-    'Alairas helye:',
-    '',
-    '_____________________',
-    '[[Nev]] alairasa',
-    'Datum: [[Datum]]',
-    '',
-    '_____________________',
-    '[[Ceg neve]] alairasa',
-    'Datum: [[Datum]]',
-    '',
-    '_____________________',
-    'Tanu alairasa',
-    'Datum: [[Datum]]',
-  ]
-
-  let currentY = height - margin - 80
-  const lineHeight = 20
-
-  // Draw contract text
-  contractText.forEach((line) => {
-    if (line.trim() === '') {
-      currentY -= lineHeight / 2
-      return
-    }
-
-    // Replace placeholders with actual data
-    const displayText = line
-      .replace('[[Nev]]', contractData.name)
-      .replace('[[Datum]]', contractData.date)
-      .replace('[[Ceg neve]]', contractData.companyName || '_________________')
-      .replace('[[Osszeg]]', contractData.contractValue || '_________________')
-
-    // Check if we need to add a new page
-    if (currentY < margin + 100) {
-      const newPage = pdfDoc.addPage([595.28, 841.89])
-      currentY = height - margin - 40
-      // Update the page reference for drawing
-      page = newPage
-    }
-
-    // Determine font weight based on content
-    const isBold =
-      line.includes('SZERZŐDÉS') ||
-      line.includes('Aláírás helye:') ||
-      line.includes('_____________________') ||
-      line.includes('aláírása')
-
-    // Calculate text width to handle long lines properly
-    const textWidth = (isBold ? boldFont : font).widthOfTextAtSize(displayText, isBold ? 12 : 11)
-    
-    // If text is too long, break it into multiple lines
-    if (textWidth > contentWidth) {
-      // Simple word wrapping - split by spaces and draw each part
-      const words = displayText.split(' ')
-      let currentLine = ''
-      let tempY = currentY
-      
-      words.forEach((word, wordIndex) => {
-        const testLine = currentLine + (currentLine ? ' ' : '') + word
-        const testWidth = (isBold ? boldFont : font).widthOfTextAtSize(testLine, isBold ? 12 : 11)
-        
-        if (testWidth > contentWidth && currentLine) {
-          // Draw current line and start new one
-          page.drawText(currentLine, {
-            x: margin,
-            y: tempY,
-            size: isBold ? 12 : 11,
-            font: isBold ? boldFont : font,
-            color: rgb(0, 0, 0),
-            maxWidth: contentWidth,
-          })
-          tempY -= lineHeight
-          currentLine = word
-        } else {
-          currentLine = testLine
-        }
-        
-        // Draw last line
-        if (wordIndex === words.length - 1) {
-          page.drawText(currentLine, {
-            x: margin,
-            y: tempY,
-            size: isBold ? 12 : 11,
-            font: isBold ? boldFont : font,
-            color: rgb(0, 0, 0),
-            maxWidth: contentWidth,
-          })
-          currentY = tempY - lineHeight
-        }
-      })
-    } else {
-      // Text fits on one line
-      page.drawText(displayText, {
-        x: margin,
-        y: currentY,
-        size: isBold ? 12 : 11,
-        font: isBold ? boldFont : font,
-        color: rgb(0, 0, 0),
-        maxWidth: contentWidth,
-      })
-      currentY -= lineHeight
-    }
-  })
-
-  // Add page numbers
-  const pages = pdfDoc.getPages()
-  pages.forEach((page, index) => {
-    const { width } = page.getSize()
-    page.drawText(`Oldal ${index + 1} / ${pages.length}`, {
-      x: width - 80,
-      y: 30,
-      size: 10,
+  // 🔹 Itt jönne a szerződés szöveg (placeholderekkel, tördeléssel, stb.)
+  page.drawText(
+    `Ez a szerződés ${contractData.name} és ${contractData.companyName ?? '________________'} között jön létre ${contractData.date} napján.`,
+    {
+      x: margin,
+      y: height - margin - 100,
+      size: 12,
       font: font,
-      color: rgb(0.5, 0.5, 0.5),
-    })
-  })
+      color: rgb(0, 0, 0),
+      maxWidth: contentWidth,
+    }
+  )
 
-  // Convert PDF to bytes
   const pdfBytes = await pdfDoc.save()
-
-  // Convert to base64
-  const base64 = Buffer.from(pdfBytes).toString('base64')
-
-  return base64
+  return Buffer.from(pdfBytes).toString('base64')
 }
 
 // Utility function to download PDF (for testing purposes)
